@@ -1,71 +1,104 @@
-# aw-tauri
+# aw-tauri-zh
 
-[![Build](https://github.com/ActivityWatch/aw-tauri/actions/workflows/build.yml/badge.svg)](https://github.com/ActivityWatch/aw-tauri/actions/workflows/build.yml)
+ActivityWatch 的中文二创版本，基于 [aw-tauri](https://github.com/ActivityWatch/aw-tauri) 修改。
 
-The next-gen module manager and desktop shell for [ActivityWatch](https://activitywatch.net/), built with [Tauri](https://tauri.app/). Replaces the legacy [aw-qt](https://github.com/ActivityWatch/aw-qt) (Python/Qt).
+> **关于本仓库**
+>
+> 这是 [ActivityWatch](https://activitywatch.net/) 的二次创作版本，由 [s13mjl](https://github.com/s13mjl) 维护。
+>
+> 本仓库中的所有信息（文档、论坛、捐赠链接等）除非另有说明，均指向原项目。原开发者团队保留所有权利。
+>
+> - **原仓库**：[github.com/ActivityWatch/aw-tauri](https://github.com/ActivityWatch/aw-tauri)
+> - **二创仓库**：[github.com/s13mjl/aw-tauri-zh](https://github.com/s13mjl/aw-tauri-zh)
+> - **原项目官网**：[activitywatch.net](https://activitywatch.net/)
 
-## Why aw-tauri?
+## 二创改动内容
 
-- **Simpler builds** — No more PyInstaller. `npx tauri build` produces deb, rpm, AppImage, .app, and MSI from one codebase.
-- **Embedded server** — Runs aw-server-rust in-process; no separate server binary needed.
-- **Modern stack** — Rust + WebView instead of Python + Qt, with native code-signing and updater support.
-- **Cross-platform** — Builds for Linux, macOS, and Windows including ARM64.
-- **Mobile future** — Tauri supports iOS and Android, enabling future mobile ActivityWatch builds.
+相较于原版 aw-tauri，本版本做了以下改进：
 
-## What it does
+### 完整中文汉化
+- 应用界面全部翻译为简体中文
+- 保留了技术术语的英文原文
 
-aw-tauri bundles everything needed to run ActivityWatch into a single application:
+### Bug 修复（按严重程度分级）
 
-- **Embedded server** — Runs `aw-server-rust` in-process (no separate server binary needed)
-- **Module manager** — Discovers, starts, stops, and monitors watcher processes (aw-watcher-afk, aw-watcher-window, etc.)
-- **System tray** — Tray icon with menu to open the dashboard, toggle modules, and access config/log folders
-- **WebView dashboard** — Opens the aw-webui dashboard in a native window
-- **Crash recovery** — Exponential backoff restart for crashed modules (up to 3 retries)
-- **Single instance** — Only one aw-tauri process runs at a time via lockfile detection
-- **Autostart** — OS-native autostart registration (macOS AppleScript, Linux XDG, Windows registry)
-- **Cross-platform** — Builds for Linux (deb, rpm, AppImage), macOS (.app), and Windows (MSI) including ARM64
+**S 级（严重）**
+- 修复分类编辑中的验证和保存问题
 
-## Prerequisites
+**A 级（高优先级）**
+- 修复多个影响核心功能的 bug
 
-- [Tauri v2 prerequisites](https://v2.tauri.app/start/prerequisites/) (system dependencies)
-- [Node.js](https://nodejs.org/) (for Tauri CLI and aw-webui build)
-- [Rust](https://rustup.rs/) (stable toolchain)
+**B 级（中等优先级）**
+- `#1104` 移除暗色模式下 SVG 文字的 text-shadow
+- `#851` 时间线条形图 Y 轴上限改为硬上限，防止溢出
+- `#847`/`#1099` 添加长超时支持，解决导出和月度查询超时
+- `#646` 修复客户端与服务端分类匹配行为不一致导致颜色不匹配
+- `#852` 修复后台音频标签页不被计入活跃时间
+- `#1117` 修复 always_active_pattern 设置不生效
+- `#1007` 修复暗色模式下类别颜色对比度问题
 
-## Quick start
+**C 级（低优先级）**
+- 修复多个 UI/UX 细节问题
+
+**D 级（改进）**
+- `#991` 优化查询缓存，避免相同查询选项触发重复查询
+- `#775` 分类设置界面补充同深度匹配规则的说明
+- `#406` 新增自动定期导出 JSON 备份功能
+- `#394` 修复导入成功后显示 null 的问题
+- `#352` 分类模式提示中补充 URL 分类说明
+
+### 功能增强
+- **分类优先级**：分类设置中新增优先级字段，同深度匹配时高优先级胜出
+- **多模式输入**：分类规则中用"+"按钮添加多个字符串字段，不再用 `|` 表示"或"
+- **自动备份**：可设置定期自动导出所有数据为 JSON 文件
+- **查询优化**：深度比较查询选项，避免不必要的重复查询
+- **暗色模式**：改善多种可视化组件在暗色模式下的文字对比度
+
+## 构建
+
+### 前置条件
+
+- [Tauri v2 前置依赖](https://v2.tauri.app/start/prerequisites/)
+- [Node.js](https://nodejs.org/)
+- [Rust](https://rustup.rs/)（stable 工具链）
+
+### 步骤
 
 ```sh
-# Clone with submodules (aw-webui)
-git clone --recursive https://github.com/ActivityWatch/aw-tauri.git
-cd aw-tauri
+# 克隆（含子模块）
+git clone --recursive https://github.com/s13mjl/aw-tauri-zh.git
+cd aw-tauri-zh
 
-# Install Node dependencies
+# 安装依赖
 npm install
+cd aw-webui && npm install && cd ..
 
-# Run in development mode
+# 开发模式
 make dev
 
-# Build release binary
+# 构建 release 二进制（不打包安装包）
+npx tauri build --no-bundle
+
+# 构建并打包安装包
 make build
 ```
 
-## Configuration
+## 配置
 
-aw-tauri reads its config from a TOML file:
+aw-tauri 从 TOML 文件读取配置：
 
-| Platform | Path |
-|----------|------|
+| 平台 | 路径 |
+|------|------|
 | Linux    | `~/.config/activitywatch/aw-tauri/config.toml` |
 | macOS    | `~/Library/Application Support/activitywatch/aw-tauri/config.toml` |
 | Windows  | `%APPDATA%\activitywatch\aw-tauri\config.toml` |
 
-A default config is generated on first run. Example:
+首次运行时自动生成默认配置。示例：
 
 ```toml
 port = 5600
 discovery_paths = [
-  "/home/user/.local/bin",
-  "/home/user/.local/share/activitywatch/aw-tauri/modules",
-  "/home/user/aw-modules",
+  "C:\\Users\\你的用户名\\aw-modules",
 ]
 
 [autostart]
@@ -74,179 +107,49 @@ minimized = true
 modules = [
   "aw-watcher-afk",
   "aw-watcher-window",
-  { name = "aw-sync", args = "daemon" },
 ]
-
-[module_args]
-"aw-watcher-vscode" = "--poll-interval 30"
 ```
 
-**Key settings:**
-- `port` — Server port (default: 5600)
-- `discovery_paths` — Additional directories to search for `aw-*` module binaries
-- `autostart.enabled` — Register for OS autostart on login
-- `autostart.minimized` — Start minimized to tray (if `false`, opens dashboard on launch)
-- `autostart.modules` — Modules to start automatically. Each entry can be a string (`"aw-watcher-afk"`) or an object with args (`{ name = "aw-sync", args = "daemon" }`)
-- `module_args` — Default args by module name, used when a module is launched from the tray menu or restarted after a crash. Lets you set args for a module *without* adding it to `autostart.modules` (e.g. `aw-watcher-vscode` above is launched manually from the tray, but still gets its args). If a module is listed in both places, the inline args on its `autostart.modules` entry take precedence.
-
-**Note:** On Linux with Wayland, the default modules are `aw-awatcher` instead of `aw-watcher-afk` + `aw-watcher-window` (auto-detected via `XDG_SESSION_TYPE` / `WAYLAND_DISPLAY`).
-
-## Logging
-
-Logs are written to:
-
-| Platform | Path |
-|----------|------|
-| Linux    | `~/.cache/activitywatch/aw-tauri/log/aw-tauri.log` |
-| macOS    | `~/Library/Logs/activitywatch/aw-tauri/aw-tauri.log` |
-| Windows  | `%LOCALAPPDATA%\activitywatch\Logs\aw-tauri\aw-tauri.log` |
-
-Log rotation happens automatically at 32 MB, keeping the 5 most recent rotated logs.
-
-**Environment variables:**
-- `AW_DEBUG=1` — Enable debug-level logging
-- `AW_TRACE=1` — Enable trace-level logging (very verbose)
-
-## Architecture
+## 架构
 
 ```
 ┌─────────────────────────────────────────────┐
 │                  aw-tauri                    │
-│                                             │
 │  ┌───────────┐  ┌─────────────────────────┐ │
 │  │ Tray Icon │  │   WebView (aw-webui)    │ │
 │  │  + Menu   │  │                         │ │
 │  └─────┬─────┘  └─────────────────────────┘ │
-│        │                                    │
 │  ┌─────┴──────────────────────────────────┐ │
 │  │          Module Manager                │ │
-│  │  (discover, start, stop, restart)      │ │
 │  └─────┬──────────────────────────────────┘ │
-│        │                                    │
 │  ┌─────┴──────────────────────────────────┐ │
 │  │       aw-server-rust (embedded)        │ │
 │  │         Rocket HTTP on :5600           │ │
 │  └────────────────────────────────────────┘ │
 └─────────────────────────────────────────────┘
-        │
         │ spawns child processes
         ▼
-┌──────────────┐  ┌──────────────────┐  ┌─────────┐
-│ aw-watcher-  │  │ aw-watcher-      │  │aw-sync  │
-│ afk          │  │ window           │  │ daemon  │
-└──────────────┘  └──────────────────┘  └─────────┘
+┌──────────────┐  ┌──────────────────┐
+│ aw-watcher-  │  │ aw-watcher-      │
+│ afk          │  │ window           │
+└──────────────┘  └──────────────────┘
 ```
 
-### Source layout
+## 致谢
 
-```
-aw-tauri/
-├── src-tauri/
-│   ├── src/
-│   │   ├── main.rs        # Entry point — calls lib::run()
-│   │   ├── lib.rs         # Application setup: Tauri builder, server, tray, config
-│   │   ├── manager.rs     # Module manager: discovery, lifecycle, crash recovery
-│   │   ├── dirs.rs        # Platform-specific directory resolution
-│   │   └── logging.rs     # Log setup with fern, rotation at 32 MB
-│   ├── build.rs           # Build script — requires AW_WEBUI_DIR env var
-│   ├── Cargo.toml         # Rust dependencies
-│   ├── capabilities/      # Tauri v2 capability declarations
-│   └── .cargo/config.toml # Sets AW_WEBUI_DIR to ../aw-webui/dist
-├── aw-webui/              # Git submodule → ActivityWatch/aw-webui
-├── Makefile               # Build orchestration
-├── package.json           # Node.js config (Tauri CLI)
-└── .pre-commit-config.yaml
-```
+- **原开发者**：[Erik Bjare](https://github.com/ErikBjare) 及所有 [ActivityWatch 贡献者](https://github.com/ActivityWatch/activitywatch/graphs/contributors)
+- **原项目**：[ActivityWatch](https://activitywatch.net/) — 一个优秀的开源时间追踪工具
 
-### Key modules
+本二创版本的所有改动基于原开发者的工作。如果你喜欢 ActivityWatch，请支持原开发者：
+- [捐赠页面](https://activitywatch.net/donate/)
+- [Patreon](https://www.patreon.com/erikbjare)
+- [Open Collective](https://opencollective.com/activitywatch)
 
-**`lib.rs`** — The core of the application. Sets up:
-- Config loading from TOML (with first-run defaults)
-- aw-server-rust embedded via `build_rocket()` on an async Tauri runtime
-- WebView window navigated to `http://localhost:{port}/`
-- System tray with Open Dashboard / Modules submenu / Quit
-- Single-instance enforcement via lockfile watching
-- Autostart registration via `tauri-plugin-autostart`
+## 问题反馈
 
-**`manager.rs`** — Process manager for ActivityWatch modules:
-- **Discovery**: Scans `PATH` + configured `discovery_paths` for executables matching `aw-*` prefix. On Unix, checks execute permission; on Windows, looks for `.exe` files. Excludes known non-module binaries (aw-tauri, aw-client, aw-server, etc.)
-- **Lifecycle**: Starts modules as child processes, tracks PIDs, handles start/stop from tray menu
-- **Crash recovery**: On non-zero exit, restarts with exponential backoff (2s, 4s, 8s). After 3 consecutive crashes, stops and notifies the user
-- **Parent monitoring** (Unix): Creates a pipe so child processes are terminated if the parent dies
-- **Job objects** (Windows): Assigns children to a job object with `JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE`
-- **aw-notify special handling**: Runs with `--output-only` flag, parses JSON notification output, and uses Tauri's notification API to display them natively
+- **二创版本的问题**（汉化、二创引入的 bug）：[本仓库 Issues](https://github.com/s13mjl/aw-tauri-zh/issues)
+- **ActivityWatch 本身的问题**：[原仓库 Issues](https://github.com/ActivityWatch/activitywatch/issues)
 
-**`dirs.rs`** — Platform-aware directory resolution for config, data, logs, and runtime paths. Uses the `dirs` crate for standard locations. Includes Android stubs for future mobile support.
+## 许可证
 
-**`logging.rs`** — Logging via `fern` with colored console output. Log rotation at 32 MB with 5 rotated copies kept.
-
-### Module discovery paths
-
-aw-tauri searches for `aw-*` executables in these locations:
-
-| Platform | Paths |
-|----------|-------|
-| Linux    | `~/bin`, `~/.local/bin`, `$XDG_DATA_HOME/activitywatch/aw-tauri/modules`, `~/aw-modules`, `$PATH` |
-| macOS    | `~/aw-modules`, `/Applications/ActivityWatch.app/Contents/MacOS`, `/Applications/ActivityWatch.app/Contents/Resources`, `$PATH` |
-| Windows  | `C:\Users\{user}\aw-modules`, `C:\Users\{user}\AppData\Local\Programs\ActivityWatch`, `%PATH%` |
-
-Additional paths can be added via `discovery_paths` in the config.
-
-## Development
-
-### Prerequisites
-
-Install [Tauri v2 prerequisites](https://v2.tauri.app/start/prerequisites/) for your platform, plus Node.js and Rust.
-
-### Commands
-
-```sh
-make dev        # Run in development mode (hot-reload for Rust)
-make build      # Build release binary
-make format     # Format Rust code (cargo fmt)
-make check      # Run cargo check + clippy
-make precommit  # Run format + check (same as pre-commit hooks)
-make package    # Package built binary into dist/
-```
-
-### How the build works
-
-1. `npm install` — Installs Tauri CLI
-2. `make prebuild` — Initializes aw-webui submodule, builds aw-webui (`cd aw-webui && make build`), generates tray icons
-3. `AW_WEBUI_DIR` env var (set in `src-tauri/.cargo/config.toml`) points the build to `aw-webui/dist/`
-4. `npm run tauri build` — Compiles Rust code + bundles into platform-specific packages
-
-### Pre-commit hooks
-
-The repo uses [pre-commit](https://pre-commit.com/) with these hooks:
-- `cargo fmt` — Rust formatting
-- `cargo clippy -- -D warnings` — Lint with warnings as errors
-- `cargo check` — Compilation check
-- `end-of-file-fixer` — Ensure files end with newline
-- `check-added-large-files` — Block files > 500 KB
-
-### Running tests
-
-```sh
-cd src-tauri && cargo test
-```
-
-Currently tests cover directory resolution (`dirs.rs`). More test coverage is welcome.
-
-## Troubleshooting
-
-### Port already in use
-
-If aw-tauri fails to start with "Port 5600 is already in use", another ActivityWatch server (or aw-tauri instance) is running. Stop it first, or change the `port` in your config.
-
-### Modules not discovered
-
-Check that your watcher binaries are in one of the [discovery paths](#module-discovery-paths) or add a custom path to `discovery_paths` in your config. On Unix, ensure the binaries have execute permission.
-
-### Blank webview
-
-If the dashboard shows a blank page, the aw-webui assets may not have been built. Run `cd aw-webui && make build` and restart.
-
-## License
-
-[MPL-2.0](LICENSE.txt)
+[MPL-2.0](LICENSE.txt) — 继承自原项目。

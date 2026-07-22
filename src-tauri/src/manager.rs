@@ -289,13 +289,13 @@ fn build_tray_menu(
     app: &AppHandle,
     modules: &ModulesSnapshot,
 ) -> HashMap<String, CheckMenuItem<Wry>> {
-    let open = MenuItem::with_id(app, "open", "Open Dashboard", true, None::<&str>)
+    let open = MenuItem::with_id(app, "open", "打开仪表板", true, None::<&str>)
         .expect("failed to create open menu item");
-    let quit = MenuItem::with_id(app, "quit", "Quit ActivityWatch", true, None::<&str>)
+    let quit = MenuItem::with_id(app, "quit", "退出 ActivityWatch", true, None::<&str>)
         .expect("failed to create quit menu item");
 
     let mut module_items = HashMap::new();
-    let mut modules_submenu_builder = SubmenuBuilder::new(app, "Modules");
+    let mut modules_submenu_builder = SubmenuBuilder::new(app, "模块");
     // Started modules first, alphabetically (BTreeMap iterates in key order), each with a checkbox.
     for (module, run_state) in modules.iter() {
         if let Some(running) = run_state {
@@ -322,13 +322,13 @@ fn build_tray_menu(
     let config_folder = MenuItem::with_id(
         app,
         "config_folder",
-        "Open config folder",
+        "打开配置文件夹",
         true,
         None::<&str>,
     )
     .expect("Failed to create config folder menu item");
 
-    let log_folder = MenuItem::with_id(app, "log_folder", "Open log folder", true, None::<&str>)
+    let log_folder = MenuItem::with_id(app, "log_folder", "打开日志文件夹", true, None::<&str>)
         .expect("Failed to create log folder menu item");
     let separator = PredefinedMenuItem::separator(app).expect("Failed to create separator");
     let menu = Menu::with_items(
@@ -606,7 +606,7 @@ fn handle(
                                 if let Some((secs, restart_count)) = restart_info {
                                     show_warning(
                                         &event_tx_for_restart,
-                                        &format!("{name_clone} crashed. Restarting..."),
+                                        &format!("{name_clone} 崩溃，正在重启..."),
                                     );
                                     error!("Module {name_clone} crashed and will be restarted");
 
@@ -633,7 +633,7 @@ fn handle(
                                 show_warning(
                                     &event_tx_for_restart,
                                     &format!(
-                                        "{name_clone} keeps on crashing. Restart limit reached."
+                                        "{name_clone} 持续崩溃，已达重启上限。"
                                     ),
                                 );
                                 error!("Module {name_clone} exceeded crash restart limit");
@@ -1035,7 +1035,7 @@ fn route_notification(event_tx: &Option<Sender<ManagerEvent>>, title: &str, mess
 fn show_warning(event_tx: &Option<Sender<ManagerEvent>>, message: &str) {
     if let Some(tx) = event_tx {
         let _ = tx.send(ManagerEvent::Notification {
-            title: "Warning".to_string(),
+            title: "警告".to_string(),
             message: message.to_string(),
         });
         return;
@@ -1048,7 +1048,7 @@ fn show_warning(event_tx: &Option<Sender<ManagerEvent>>, message: &str) {
     app.dialog()
         .message(message)
         .kind(MessageDialogKind::Warning)
-        .title("Warning")
+        .title("警告")
         .show(|_| {});
 }
 
