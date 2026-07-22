@@ -222,7 +222,7 @@ pub fn handle_first_run() {
             app.notification()
                 .builder()
                 .title("Aw-Tauri")
-                .body("Welcome to Aw-Tauri! Click on the tray icon to launch the dashboard")
+                .body("欢迎使用 Aw-Tauri！点击托盘图标启动仪表板。")
                 .show()
                 .expect("Failed to show first run notification");
             if let Some(window) = app.webview_windows().get("main") {
@@ -440,9 +440,9 @@ pub(crate) fn get_config() -> &'static UserConfig {
                     if !is_daemon_mode() && !is_mini_mode() {
                         let app = &*get_app_handle().lock().expect("Failed to get app handle");
                         app.dialog()
-                            .message("Malformed config file. Using default config.")
+                            .message("配置文件格式错误，使用默认配置。")
                             .kind(MessageDialogKind::Error)
-                            .title("Error")
+                            .title("错误")
                             .show(|_| {});
                     }
 
@@ -472,7 +472,7 @@ fn run_daemon() {
         .unwrap_or(if testing { 5666 } else { config.port });
 
     if !is_port_available(port).expect("Failed to check port availability") {
-        eprintln!("Error: port {} is already in use", port);
+        eprintln!("错误：端口 {} 已被占用", port);
         std::process::exit(1);
     }
 
@@ -583,7 +583,7 @@ pub(crate) fn prepare_aw_server(
     // Check port availability before opening the datastore — opening the SQLite
     // store acquires a lock, so bail on a busy port first (matches run_daemon's order).
     if !is_port_available(port).map_err(|e| format!("Failed to check port availability: {e}"))? {
-        return Err(format!("Port {} is already in use", port));
+        return Err(format!("端口 {} 已被占用", port));
     }
 
     let db_path = aw_server::dirs::db_path(testing)
@@ -772,9 +772,9 @@ pub fn run() {
                 };
                 if !is_port_available(port).expect("Failed to check port availability") {
                     app.dialog()
-                        .message(format!("Port {} is already in use", port))
+                        .message(format!("端口 {} 已被占用", port))
                         .kind(MessageDialogKind::Error)
-                        .title("Error")
+                        .title("错误")
                         .show(|_| {});
                     panic!("Port {} is already in use", port);
                 }
@@ -821,9 +821,9 @@ pub fn run() {
                 .expect("Failed to create main window");
                 let manager_state = manager::start_manager();
 
-                let open = MenuItem::with_id(app, "open", "Open Dashboard", true, None::<&str>)
+                let open = MenuItem::with_id(app, "open", "打开仪表板", true, None::<&str>)
                     .expect("Failed to create open menu item");
-                let quit = MenuItem::with_id(app, "quit", "Quit ActivityWatch", true, None::<&str>)
+                let quit = MenuItem::with_id(app, "quit", "退出 ActivityWatch", true, None::<&str>)
                     .expect("Failed to create quit menu item");
 
                 let menu =
@@ -849,6 +849,7 @@ pub fn run() {
                     .menu(&menu)
                     .show_menu_on_left_click(true)
                     .tooltip("ActivityWatch");
+
                 let tray = tray_builder.build(app).expect("Failed to create tray");
 
                 init_tray_id(tray.id().clone());

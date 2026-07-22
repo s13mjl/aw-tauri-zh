@@ -89,7 +89,7 @@ pub fn run() {
                 if !first_run_notified && *crate::is_first_run() {
                     show_notification(
                         "Aw-Tauri",
-                        "Welcome to Aw-Tauri! Use the tray icon to open the dashboard.",
+                        "欢迎使用 Aw-Tauri！使用托盘图标打开仪表板。",
                     );
                     first_run_notified = true;
                 }
@@ -124,7 +124,7 @@ pub fn run() {
                 }
             }
             Event::UserEvent(MiniEvent::ServerFailed(msg)) => {
-                show_notification("ActivityWatch Error", &format!("Server failed: {msg}"));
+                show_notification("ActivityWatch 错误", &format!("服务器失败：{msg}"));
                 if let Ok(mut state) = manager_state.lock() {
                     state.stop_modules();
                 }
@@ -174,11 +174,11 @@ fn update_tray_menu(tray_icon: &TrayIcon, modules: &manager::ModulesSnapshot) {
 
 fn build_tray_menu(modules: &manager::ModulesSnapshot) -> Result<Menu, Box<dyn std::error::Error>> {
     let menu = Menu::new();
-    let open = MenuItem::with_id("open", "Open Dashboard", true, None);
+    let open = MenuItem::with_id("open", "打开仪表板", true, None);
     menu.append(&open)?;
     menu.append(&PredefinedMenuItem::separator())?;
 
-    let modules_submenu = Submenu::with_id("modules", "Modules", true);
+    let modules_submenu = Submenu::with_id("modules", "模块", true);
     // Started modules first, alphabetically, each with a checkbox.
     for (module, run_state) in modules {
         if let Some(running) = run_state {
@@ -197,13 +197,13 @@ fn build_tray_menu(modules: &manager::ModulesSnapshot) -> Result<Menu, Box<dyn s
     menu.append(&modules_submenu)?;
     menu.append(&PredefinedMenuItem::separator())?;
 
-    let config_folder = MenuItem::with_id("config_folder", "Open config folder", true, None);
-    let log_folder = MenuItem::with_id("log_folder", "Open log folder", true, None);
+    let config_folder = MenuItem::with_id("config_folder", "打开配置文件夹", true, None);
+    let log_folder = MenuItem::with_id("log_folder", "打开日志文件夹", true, None);
     menu.append(&config_folder)?;
     menu.append(&log_folder)?;
     menu.append(&PredefinedMenuItem::separator())?;
 
-    let quit = MenuItem::with_id("quit", "Quit ActivityWatch", true, None);
+    let quit = MenuItem::with_id("quit", "退出 ActivityWatch", true, None);
     menu.append(&quit)?;
 
     Ok(menu)
