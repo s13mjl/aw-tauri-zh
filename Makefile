@@ -14,14 +14,14 @@ dev: prebuild
 %/.git:
 	git submodule update --init --recursive
 
-src-tauri/icons/icon.png: aw-webui/.git
+src-tauri/icons/icon.png: aw-webui-zh/.git
 	mkdir -p src-tauri/icons
-	npm run tauri icon "./aw-webui/media/logo/logo.png"
+	npm run tauri icon "./aw-webui-zh/media/logo/logo.png"
 
-aw-webui/dist: aw-webui/.git
-	cd aw-webui && make build
+aw-webui-zh/dist: aw-webui-zh/.git
+	cd aw-webui-zh && make build
 
-prebuild: aw-webui/dist node_modules src-tauri/icons/icon.png
+prebuild: aw-webui-zh/dist node_modules src-tauri/icons/icon.png
 
 precommit: format check
 
