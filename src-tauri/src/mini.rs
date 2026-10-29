@@ -87,10 +87,7 @@ pub fn run() {
             Event::NewEvents(StartCause::Init) if tray_icon.is_none() => {
                 tray_icon = Some(create_tray_icon(&modules));
                 if !first_run_notified && *crate::is_first_run() {
-                    show_notification(
-                        "Aw-Tauri",
-                        "欢迎使用 Aw-Tauri！使用托盘图标打开仪表板。",
-                    );
+                    show_notification("Aw-Tauri", "欢迎使用 Aw-Tauri！使用托盘图标打开仪表板。");
                     first_run_notified = true;
                 }
             }

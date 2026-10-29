@@ -319,14 +319,9 @@ fn build_tray_menu(
     let module_submenu = modules_submenu_builder
         .build()
         .expect("Failed to create module submenu");
-    let config_folder = MenuItem::with_id(
-        app,
-        "config_folder",
-        "打开配置文件夹",
-        true,
-        None::<&str>,
-    )
-    .expect("Failed to create config folder menu item");
+    let config_folder =
+        MenuItem::with_id(app, "config_folder", "打开配置文件夹", true, None::<&str>)
+            .expect("Failed to create config folder menu item");
 
     let log_folder = MenuItem::with_id(app, "log_folder", "打开日志文件夹", true, None::<&str>)
         .expect("Failed to create log folder menu item");
@@ -632,9 +627,7 @@ fn handle(
                                 }
                                 show_warning(
                                     &event_tx_for_restart,
-                                    &format!(
-                                        "{name_clone} 持续崩溃，已达重启上限。"
-                                    ),
+                                    &format!("{name_clone} 持续崩溃，已达重启上限。"),
                                 );
                                 error!("Module {name_clone} exceeded crash restart limit");
                             }
